@@ -12,7 +12,7 @@ int main(void)
     // for(int i=0;i<=strlen(str)-1;i++)
     // {
     //     printf("%c\n",str[i]);
-    // }
+    // }    
     // return 0;
 
     //遍历方法2
