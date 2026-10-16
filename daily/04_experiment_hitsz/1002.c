@@ -13,7 +13,7 @@ int main()
     scanf("%d-%d-%d", &year, &month, &day);
 
     // 检查输入的合法性
-    if (year < 1990 || month < 1 || month > 12 || day < 1)
+    if (year < 1990 || month < 1 || month > 12 || day < 1 ||(month == 2 && day > (is_leap_year(year) ? 29 : 28)) || (month == 4 || month == 6 || month == 9 || month == 11) && day > 30 || day > 31)
     {
         printf("Invalid input\n");
         return 0;
@@ -44,7 +44,7 @@ int main()
     }
 
     // 加上当前月份的天数
-    days += day - 1; // 减去1，因为1990年1月1日是第0天
+    days += day-1; // 减去1，因为1990年1月1日是第0天
 
     // 判断是打渔还是晒网
     if (days % 5 < 3)
