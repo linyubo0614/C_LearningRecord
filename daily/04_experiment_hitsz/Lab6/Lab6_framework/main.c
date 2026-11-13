@@ -182,7 +182,27 @@ int load_records(Record rec[], int max_count)
 
     int count = 0;
     // TODO-1: 在此处实现从文件读取记录到 rec[] 中的逻辑
+    FILE* fptxt=fopen(SCORE_FILE,"r");
+    if(fptxt==NULL)
+    {
+        printf("无法打开文件");
+        return 0;
+    }
+    for(count=0;count<max_count;)
+    {
+        int quiet=fscanf(fptxt,"%19s %d %10s %8s", 
+           rec[count].name, 
+           &rec[count].ms, 
+           rec[count].date,
+           rec[count].time_str);
 
+        if(quiet==4)
+        {
+            count++;
+        }
+        else break;
+    }
+    fclose(fptxt);
     return count;
 }
 
@@ -202,6 +222,18 @@ int load_records(Record rec[], int max_count)
 void show_records(const Record rec[], int count)
 {
     // TODO-2: 在此处实现遍历数组并格式化输出的逻辑
+    printf("%-6s %-12s %-15s %s\n", "编号", "姓名", "反应时间(ms)", "记录时间");
+    printf("--------------------------------------------------\n");
+
+    for(int i=0;i<count;i++)
+    {
+        printf("%-6d %-12s %-15d %-s %s\n",
+               i + 1,
+               rec[i].name,
+               rec[i].ms,
+               rec[i].date,
+               rec[i].time_str);
+    }
 }
 
 /* =========================================================
@@ -221,5 +253,32 @@ void show_records(const Record rec[], int count)
 int add_record(Record rec[], int *count, int ms)
 {
     // TODO-3: 在此处实现追加记录并写入文件的逻辑
-    return -1;
+    // 获取名字
+    printf("请输入名字(不含空格):\n");
+    scanf("%s",rec[*count].name);
+    clear_input_buffer();
+
+    // 获取时间
+    rec[*count].ms = ms;
+    time_t t = time(NULL);
+    struct tm *tm_info = localtime(&t);
+    sprintf(rec[*count].date, "%04d-%02d-%02d", tm_info->tm_year + 1900, tm_info->tm_mon + 1, tm_info->tm_mday);
+    sprintf(rec[*count].time_str,"%02d:%02d:%02d",tm_info->tm_hour,tm_info->tm_min,tm_info->tm_sec);
+
+    FILE *fptxt = fopen(SCORE_FILE, "a");
+    if(fptxt==NULL)
+    {
+        printf("无法打开文件");
+        return -1;
+    }
+    fprintf(fptxt, "%s %d %s %s\n", 
+            rec[*count].name, 
+            rec[*count].ms, 
+            rec[*count].date, 
+            rec[*count].time_str);
+
+    fclose(fptxt);
+    (*count)++;
+    return 1;
+
 }
